@@ -1,9 +1,3 @@
-// var measurement;
-// if (OS_ANDROID) {
-	// measurement = require('alloy/measurement');
-// }
-// touchX = measurement.pxToDP(touchX);
-
 var caches = {};
 
 init($.args);
@@ -44,7 +38,7 @@ function footerLoad(child) {
 
 var footerVisible = true;
 function footerAnimate(visible) {
-  	if ($.footer == null || visible == footerVisible) { return; }
+  	if ($.footer == null || (OS_IOS && visible == footerVisible)) { return; }
   	$.footer.animate({ bottom: visible ? 0 : -caches.footer, duration: 300 });
   	footerVisible = visible;
 }
@@ -55,14 +49,15 @@ function headerLoad(child) {
 
 var headerVisible = true;
 function headerAnimate(visible) {
-  	if ($.header == null || visible == headerVisible) { return; }
+  	if ($.header == null || (OS_IOS && visible == headerVisible)) { return; }
 	$.header.animate({ top: visible ? 0 : -caches.header, duration: 300 });
 	headerVisible = visible;
 }
 
 var lastY = 0, maxHeight; 
 function bodyScroll(e) {
-	var y = Math.floor(e.y);
+	var y = e.y;
+	if (OS_ANDROID && y == lastY) { return; }
 	if (OS_IOS && maxHeight == null) {
 		maxHeight = e.contentSize.height - Ti.Platform.displayCaps.platformHeight;
 	}
